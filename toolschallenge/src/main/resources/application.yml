@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: toolschallenge
+  data:
+    mongodb:
+      host: mongodb
+      port: 27017
+      database: toolschallenge
