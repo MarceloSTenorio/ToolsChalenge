@@ -31,7 +31,7 @@ public class ConsultaServiceImpl implements ConsultaService {
     public List<TransacaoResponseDto> listarTodosPagamentos() {
         List<Transacao> transacoes = repository.listarTodosPagamentos();
 
-        if (transacoes == null) {
+        if (transacoes == null || transacoes.isEmpty()) {
             throw new ApiException("Não existem transações feitas");
         }
 
