@@ -1,7 +1,7 @@
 package br.com.toolschallenge.service.impl;
 
 import br.com.toolschallenge.domain.dto.TransacaoResponseDto;
-import br.com.toolschallenge.domain.dto.factory.PagamentoFactory;
+import br.com.toolschallenge.domain.dto.factory.TransacaoFactory;
 import br.com.toolschallenge.domain.model.Transacao;
 import br.com.toolschallenge.exception.ApiException;
 import br.com.toolschallenge.repository.TransacaoRepository;
@@ -17,7 +17,7 @@ import java.util.List;
 public class ConsultaServiceImpl implements ConsultaService {
 
     private final TransacaoRepository repository;
-    private final PagamentoFactory pagamentoFactory;
+    private final TransacaoFactory transacaoFactory;
 
     public TransacaoResponseDto buscarPagamentoPorId(String id) {
         Transacao transacaoResponseEntity = repository.buscarPagamentoPorId(id);
@@ -25,7 +25,7 @@ public class ConsultaServiceImpl implements ConsultaService {
         if (transacaoResponseEntity == null) {
             throw new ApiException("Transação não encontrada para o ID: " + id);
         }
-        return pagamentoFactory.makeTransacaoResponseDto(transacaoResponseEntity);
+        return transacaoFactory.makeTransacaoResponseDto(transacaoResponseEntity);
     }
 
     public List<TransacaoResponseDto> listarTodosPagamentos() {
@@ -35,6 +35,6 @@ public class ConsultaServiceImpl implements ConsultaService {
             throw new ApiException("Não existem transações feitas");
         }
 
-        return pagamentoFactory.makeListaTransacoesResponseDto(transacoes);
+        return transacaoFactory.makeListaTransacoesResponseDto(transacoes);
     }
 }

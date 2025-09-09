@@ -1,7 +1,6 @@
 package br.com.toolschallenge.repository.impl;
 
 import br.com.toolschallenge.domain.enums.StatusTransacaoEnum;
-import br.com.toolschallenge.domain.dto.factory.PagamentoFactory;
 import br.com.toolschallenge.domain.model.Transacao;
 import br.com.toolschallenge.repository.TransacaoMongoRepository;
 import br.com.toolschallenge.repository.TransacaoRepository;
@@ -14,8 +13,6 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TransacaoRepositoryImpl implements TransacaoRepository {
-
-    private final PagamentoFactory pagamentoFactory;
 
     @Autowired
     private TransacaoMongoRepository transacaoMongoRepository;
@@ -44,7 +41,6 @@ public class TransacaoRepositoryImpl implements TransacaoRepository {
 
     @Override
     public List<Transacao> listarTodosPagamentos() {
-
         return transacaoMongoRepository.findAll();
     }
 }

@@ -6,12 +6,13 @@ import br.com.toolschallenge.domain.command.PagamentoCommand;
 import br.com.toolschallenge.domain.command.TransacaoCommand;
 import br.com.toolschallenge.domain.dto.TransacaoDto;
 import br.com.toolschallenge.domain.dto.TransacaoResponseDto;
-import br.com.toolschallenge.domain.dto.factory.PagamentoFactory;
+import br.com.toolschallenge.domain.dto.factory.TransacaoFactory;
 import br.com.toolschallenge.domain.enums.TipoPagamentoEnum;
 import br.com.toolschallenge.domain.model.Transacao;
 import br.com.toolschallenge.exception.ApiException;
 import br.com.toolschallenge.repository.TransacaoRepository;
 import br.com.toolschallenge.service.impl.PagamentoServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,14 +33,21 @@ class PagamentoServiceImplTest {
     private TransacaoRepository transacaoRepository;
 
     @Mock
-    private PagamentoFactory pagamentoFactory;
+    private TransacaoFactory transacaoFactory;
 
     @InjectMocks
     private PagamentoServiceImpl pagamentoService;
 
+    private AutoCloseable closeable;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
@@ -59,7 +67,7 @@ class PagamentoServiceImplTest {
                 .build();
 
         Transacao transacaoMock = new Transacao();
-        when(pagamentoFactory.makeTransacao(command)).thenReturn(transacaoMock);
+        when(transacaoFactory.makeTransacao(command)).thenReturn(transacaoMock);
 
         Transacao transacaoSalvaMock = new Transacao();
         when(transacaoRepository.registrarPagamento(transacaoMock)).thenReturn(transacaoSalvaMock);
@@ -67,14 +75,14 @@ class PagamentoServiceImplTest {
         TransacaoResponseDto responseMock = TransacaoResponseDto.builder()
                 .transacao(new TransacaoDto())
                 .build();
-        when(pagamentoFactory.makeTransacaoResponseDto(transacaoSalvaMock)).thenReturn(responseMock);
+        when(transacaoFactory.makeTransacaoResponseDto(transacaoSalvaMock)).thenReturn(responseMock);
 
         TransacaoResponseDto result = pagamentoService.registrarPagamento(command);
 
         assertNotNull(result);
-        verify(pagamentoFactory, times(1)).makeTransacao(command);
+        verify(transacaoFactory, times(1)).makeTransacao(command);
         verify(transacaoRepository, times(1)).registrarPagamento(transacaoMock);
-        verify(pagamentoFactory, times(1)).makeTransacaoResponseDto(transacaoSalvaMock);
+        verify(transacaoFactory, times(1)).makeTransacaoResponseDto(transacaoSalvaMock);
     }
 
     @Test

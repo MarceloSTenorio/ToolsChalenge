@@ -5,8 +5,9 @@ import br.com.toolschallenge.domain.dto.TransacaoDto;
 import br.com.toolschallenge.domain.model.Transacao;
 import br.com.toolschallenge.exception.ApiException;
 import br.com.toolschallenge.repository.TransacaoRepository;
-import br.com.toolschallenge.domain.dto.factory.PagamentoFactory;
+import br.com.toolschallenge.domain.dto.factory.TransacaoFactory;
 import br.com.toolschallenge.service.impl.EstornoServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,14 +23,21 @@ class EstornoServiceImplTest {
     private TransacaoRepository repository;
 
     @Mock
-    private PagamentoFactory pagamentoFactory;
+    private TransacaoFactory transacaoFactory;
 
     @InjectMocks
     private EstornoServiceImpl estornoService;
 
+    private AutoCloseable closeable;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
@@ -43,7 +51,7 @@ class EstornoServiceImplTest {
                 .build();
 
         when(repository.estornarPagamento(id)).thenReturn(transacaoMock);
-        when(pagamentoFactory.makeTransacaoResponseDto(transacaoMock)).thenReturn(responseMock);
+        when(transacaoFactory.makeTransacaoResponseDto(transacaoMock)).thenReturn(responseMock);
 
         TransacaoResponseDto result = estornoService.estornarPagamento(id);
 
@@ -51,7 +59,7 @@ class EstornoServiceImplTest {
         assertEquals(responseMock, result);
 
         verify(repository, times(1)).estornarPagamento(id);
-        verify(pagamentoFactory, times(1)).makeTransacaoResponseDto(transacaoMock);
+        verify(transacaoFactory, times(1)).makeTransacaoResponseDto(transacaoMock);
     }
 
     @Test
@@ -65,6 +73,6 @@ class EstornoServiceImplTest {
 
         assertTrue(thrown.getMessage().contains("Transação não encontrada"));
         verify(repository, times(1)).estornarPagamento(id);
-        verifyNoInteractions(pagamentoFactory);
+        verifyNoInteractions(transacaoFactory);
     }
 }

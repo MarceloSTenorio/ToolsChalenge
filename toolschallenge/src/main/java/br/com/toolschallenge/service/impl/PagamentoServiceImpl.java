@@ -2,7 +2,7 @@ package br.com.toolschallenge.service.impl;
 
 import br.com.toolschallenge.domain.command.PagamentoCommand;
 import br.com.toolschallenge.domain.dto.TransacaoResponseDto;
-import br.com.toolschallenge.domain.dto.factory.PagamentoFactory;
+import br.com.toolschallenge.domain.dto.factory.TransacaoFactory;
 import br.com.toolschallenge.domain.model.Transacao;
 import br.com.toolschallenge.repository.TransacaoRepository;
 import br.com.toolschallenge.exception.ApiException;
@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class PagamentoServiceImpl implements PagamentoService {
 
     private final TransacaoRepository repository;
-    private final PagamentoFactory pagamentoFactory;
+    private final TransacaoFactory transacaoFactory;
 
     public TransacaoResponseDto registrarPagamento(PagamentoCommand command) {
 
@@ -31,9 +31,9 @@ public class PagamentoServiceImpl implements PagamentoService {
             throw new ApiException("Valor da transação inválido");
         }
 
-        Transacao transacao = pagamentoFactory.makeTransacao(command);
+        Transacao transacao = transacaoFactory.makeTransacao(command);
         Transacao transacaoSalva = repository.registrarPagamento(transacao);
 
-        return pagamentoFactory.makeTransacaoResponseDto(transacaoSalva);
+        return transacaoFactory.makeTransacaoResponseDto(transacaoSalva);
     }
 }

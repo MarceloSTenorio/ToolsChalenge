@@ -1,7 +1,7 @@
 package br.com.toolschallenge.service.impl;
 
 import br.com.toolschallenge.domain.dto.TransacaoResponseDto;
-import br.com.toolschallenge.domain.dto.factory.PagamentoFactory;
+import br.com.toolschallenge.domain.dto.factory.TransacaoFactory;
 import br.com.toolschallenge.domain.model.Transacao;
 import br.com.toolschallenge.exception.ApiException;
 import br.com.toolschallenge.repository.TransacaoRepository;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class EstornoServiceImpl implements EstornoService {
 
     private final TransacaoRepository repository;
-    private final PagamentoFactory pagamentoFactory;
+    private final TransacaoFactory transacaoFactory;
 
     public TransacaoResponseDto estornarPagamento(String id) {
 
@@ -25,6 +25,6 @@ public class EstornoServiceImpl implements EstornoService {
             throw new ApiException("Transação não encontrada para o ID: " + id);
         }
 
-        return pagamentoFactory.makeTransacaoResponseDto(transacaoResponseEntity);
+        return transacaoFactory.makeTransacaoResponseDto(transacaoResponseEntity);
     }
 }

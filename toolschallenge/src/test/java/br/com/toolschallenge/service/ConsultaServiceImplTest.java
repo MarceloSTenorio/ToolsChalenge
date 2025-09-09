@@ -1,17 +1,17 @@
 package br.com.toolschallenge.service;
 
 import br.com.toolschallenge.domain.dto.TransacaoResponseDto;
-import br.com.toolschallenge.domain.dto.factory.PagamentoFactory;
+import br.com.toolschallenge.domain.dto.factory.TransacaoFactory;
 import br.com.toolschallenge.domain.model.Transacao;
 import br.com.toolschallenge.exception.ApiException;
 import br.com.toolschallenge.repository.TransacaoRepository;
 import br.com.toolschallenge.service.impl.ConsultaServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,14 +25,21 @@ class ConsultaServiceImplTest {
     private TransacaoRepository repository;
 
     @Mock
-    private PagamentoFactory pagamentoFactory;
+    private TransacaoFactory transacaoFactory;
 
     @InjectMocks
     private ConsultaServiceImpl consultaService;
 
+    private AutoCloseable closeable;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
@@ -43,13 +50,13 @@ class ConsultaServiceImplTest {
         String id = "1";
 
         when(repository.buscarPagamentoPorId(id)).thenReturn(transacaoMock);
-        when(pagamentoFactory.makeTransacaoResponseDto(transacaoMock)).thenReturn(dtoMock);
+        when(transacaoFactory.makeTransacaoResponseDto(transacaoMock)).thenReturn(dtoMock);
 
         TransacaoResponseDto result = consultaService.buscarPagamentoPorId(id);
 
         assertNotNull(result);
         verify(repository, times(1)).buscarPagamentoPorId(id);
-        verify(pagamentoFactory, times(1)).makeTransacaoResponseDto(transacaoMock);
+        verify(transacaoFactory, times(1)).makeTransacaoResponseDto(transacaoMock);
     }
 
     @Test
