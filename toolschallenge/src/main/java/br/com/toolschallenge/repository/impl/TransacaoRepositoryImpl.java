@@ -24,14 +24,10 @@ public class TransacaoRepositoryImpl implements TransacaoRepository {
 
     @Override
     public Transacao estornarPagamento(String id) {
-        Transacao transacao = transacaoMongoRepository.findById(id).orElse(null);
-
-        assert transacao != null;
-        transacao.getDescricao().setStatus(StatusTransacaoEnum.CANCELADO);
-
-        transacaoMongoRepository.save(transacao);
-
-        return transacao;
+        return transacaoMongoRepository.findById(id).map(transacao -> {
+            transacao.getDescricao().setStatus(StatusTransacaoEnum.CANCELADO);
+            return transacaoMongoRepository.save(transacao);
+        }).orElse(null);
     }
 
     @Override
